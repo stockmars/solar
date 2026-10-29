@@ -85,23 +85,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Fungsi navigasi tab
 function switchTab(tabName, element) {
-  // Sembunyikan semua tab
   document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('d-none'));
-  // Tampilkan tab terpilih
   document.getElementById('tab-' + tabName).classList.remove('d-none');
   
-  // Update judul
   let title = tabName.charAt(0).toUpperCase() + tabName.slice(1);
   if(tabName === 'legalitas') title = 'Legalitas Vendor';
   document.getElementById('page-title').innerText = title;
 
-  // Update sidebar active state
   document.querySelectorAll('.sidebar .nav-link').forEach(el => {
     el.classList.remove('active');
     el.classList.add('text-white');
   });
   element.classList.add('active');
   element.classList.remove('text-white');
+
+  // TAMBAHKAN INI: Load data sesuai tab yang dibuka
+  if (tabName === 'vendor') {
+    loadVendors();
+  }
 }
 
 function logout() {
