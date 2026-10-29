@@ -108,3 +108,82 @@ function logout() {
   localStorage.removeItem('user_email');
   location.reload();
 }
+// ==========================================
+// MODUL VENDOR
+// ==========================================
+
+// Panggil ini setiap kali tab vendor dibuka
+async function loadVendors() {
+  const tbody = document.getElementById('tabel-vendor-body');
+  tbody.innerHTML = '<tr><td colspan="5" class="text-center">Memuat data...</td></tr>';
+  
+  const res = await callAPI('getVendors');
+  if (res.status === 'success') {
+    tbody.innerHTML = '';
+    if (res.data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada data vendor.</td></tr>';
+      return;
+    }
+    
+    res.data.forEach(v => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${v.NamaVendor}</td>
+        <td>${v.NamaPerusahaan}</td>
+        <td>${v.NamaPIC || '-'}</td>
+        <td><span class="badge ${v.StatusVendor === 'Aktif' ? 'bg-success' : 'bg-danger'}">${v.StatusVendor}</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick='editVendor(${JSON.stringify(v).replace(/'/g, "&#39;")})'>Edit</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } else {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-danger">${res.message}</td></tr>`;
+  }
+}
+
+async function simpanVendor(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-save-vendor');
+  btn.innerText = 'Menyimpan...';
+  btn.disabled = true;
+
+  const data = {
+    VendorID: document.getElementById('vendor-id').value,
+    NamaVendor: document.getElementById('vendor-nama').value,
+    NamaPerusahaan: document.getElementById('vendor-perusahaan').value,
+    NPWP: document.getElementById('vendor-npwp').value,
+    NamaPIC: document.getElementById('vendor-pic').value,
+    Alamat: document.getElementById('vendor-alamat').value,
+    StatusVendor: 'Aktif'
+  };
+
+  const res = await callAPI('saveVendor', { vendorData: JSON.stringify(data) });
+  
+  btn.innerText = 'Simpan Vendor';
+  btn.disabled = false;
+
+  if (res.status === 'success') {
+    alert(res.message);
+    resetFormVendor();
+    loadVendors(); // Refresh tabel
+  } else {
+    alert('Gagal: ' + res.message);
+  }
+}
+
+function editVendor(v) {
+  document.getElementById('vendor-id').value = v.VendorID;
+  document.getElementById('vendor-nama').value = v.NamaVendor;
+  document.getElementById('vendor-perusahaan').value = v.NamaPerusahaan;
+  document.getElementById('vendor-npwp').value = v.NPWP || '';
+  document.getElementById('vendor-pic').value = v.NamaPIC || '';
+  document.getElementById('vendor-alamat').value = v.Alamat || '';
+  window.scrollTo(0,0); // Scroll ke atas form
+}
+
+function resetFormVendor() {
+  document.getElementById('form-vendor').reset();
+  document.getElementById('vendor-id').value = '';
+}
