@@ -1,0 +1,27 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+}
+
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background-color: #1f4e79;
+}
+
+.sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 5px;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.content {
+  flex-grow: 1;
+  height: 100vh;
+  overflow-y: auto;
+}
