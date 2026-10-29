@@ -78,7 +78,65 @@
 
         <!-- Placeholder untuk tab lain -->
         <div id="tab-pembelian" class="d-none"><div class="alert alert-secondary">Modul Transaksi Pembelian belum tersedia.</div></div>
-        <div id="tab-vendor" class="d-none"><div class="alert alert-secondary">Modul Master Vendor belum tersedia.</div></div>
+                <!-- Halaman Master Vendor -->
+        <div id="tab-vendor" class="d-none">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Tambah / Edit Vendor</h5>
+              <form id="form-vendor" onsubmit="simpanVendor(event)">
+                <input type="hidden" id="vendor-id">
+                <div class="row mb-2">
+                  <div class="col-md-6">
+                    <label class="form-label">Nama Vendor (Singkat)</label>
+                    <input type="text" class="form-control" id="vendor-nama" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Nama Perusahaan (PT/CV)</label>
+                    <input type="text" class="form-control" id="vendor-perusahaan" required>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-6">
+                    <label class="form-label">NPWP</label>
+                    <input type="text" class="form-control" id="vendor-npwp">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Nama PIC / Kontak</label>
+                    <input type="text" class="form-control" id="vendor-pic">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Alamat</label>
+                  <textarea class="form-control" id="vendor-alamat" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn-save-vendor">Simpan Vendor</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFormVendor()">Batal</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Daftar Vendor</h5>
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Nama Vendor</th>
+                      <th>Perusahaan</th>
+                      <th>PIC</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabel-vendor-body">
+                    <!-- Data akan diisi oleh JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
         <div id="tab-legalitas" class="d-none"><div class="alert alert-secondary">Modul Legalitas Vendor belum tersedia.</div></div>
       </div>
     </div>
