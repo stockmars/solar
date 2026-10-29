@@ -1,18 +1,38 @@
 // GANTI URL INI DENGAN URL WEB APP APPS SCRIPT ANDA (yang berakhiran /exec)
-const GAS_URL = 'URL_WEB_APP_APPS_SCRIPT_ANDA_DISINI';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwhXY5OzHB3N_z0HE0yZaqQVfpdHgsIOIIp_G6P3A2OmCZ001WSsQplmiIGsUuYQzY_Yg/exec';
 
 let currentUser = null;
 
 // Fungsi pembantu untuk memanggil API Apps Script
-async function callAPI(action, params = {}) {
-  const queryString = new URLSearchParams({ action, ...params }).toString();
-  try {
-    const response = await fetch(`${GAS_URL}?${queryString}`);
-    return await response.json();
-  } catch (error) {
-    console.error("API Error:", error);
-    return { status: 'error', message: 'Gagal terhubung ke server backend.' };
-  }
+// Fungsi pembantu untuk memanggil API Apps Script via JSONP (Menembus CORS)
+function callAPI(action, params = {}) {
+  return new Promise((resolve) => {
+    // Buat nama fungsi unik untuk callback
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    
+    // Daftarkan fungsi callback ke window global
+    window[callbackName] = function(data) {
+      delete window[callbackName]; // Hapus setelah dipakai
+      document.body.removeChild(script);
+      resolve(data);
+    };
+
+    // Siapkan parameter
+    const queryString = new URLSearchParams({ action, callback: callbackName, ...params }).toString();
+    
+    // Buat tag script untuk menembak API
+    const script = document.createElement('script');
+    script.src = `${GAS_URL}?${queryString}`;
+    
+    // Penanganan error jika gagal muat
+    script.onerror = function() {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve({ status: 'error', message: 'Gagal memuat script API. Periksa URL GAS_URL.' });
+    };
+
+    document.body.appendChild(script);
+  });
 }
 
 // Inisialisasi aplikasi saat halaman dimuat
